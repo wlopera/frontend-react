@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Login from "./Login";
-import PersonTable from "../components/PersonTable";
+import PersonTable from "../components/person/PersonTable";
 import UserTable from "../components/UserTable";
 import { useNavigate } from "react-router-dom";
 

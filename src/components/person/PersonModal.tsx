@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import type { Person } from "../../types/Person";
+import { createPerson } from "../../services/personService";
 
 interface Props {
   onClose: () => void;
@@ -12,7 +13,6 @@ export default function PersonModal({ onClose, refresh }: Props) {
   const { token } = useAuth();
   const [form, setForm] = useState<Partial<Person>>({});
   const [photoFile, setPhotoFile] = useState<File | null>(null); // Archivo real
-  const [photoName, setPhotoName] = useState<string>(""); // Nombre para mostrar
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,41 +23,25 @@ export default function PersonModal({ onClose, refresh }: Props) {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setPhotoFile(file); // Guardamos el File para enviar al backend
-      setPhotoName(file.name); // Guardamos solo el nombre para mostrar
     }
   };
 
   const handleSubmit = async () => {
     if (!token) return;
     setLoading(true);
-
     try {
       const formData = new FormData();
-
-      // Agregamos todos los campos del formulario
-      Object.entries(form).forEach(([key, value]) => {
-        if (value !== undefined && value !== null)
-          formData.append(key, value as string);
+      Object.entries(form).forEach(([k, v]) => {
+        if (v) formData.append(k, v.toString());
       });
-
-      // Agregamos la foto si hay
       if (photoFile) formData.append("photo", photoFile);
 
-      const res = await fetch("http://localhost:3000/api/person", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`, // No poner Content-Type, fetch lo detecta automáticamente
-        },
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error("Error guardando persona");
-
+      await createPerson(formData, token);
       refresh();
       onClose();
     } catch (err) {
       console.error(err);
-      alert("❌ Error al guardar persona");
+      alert("Error al guardar persona");
     } finally {
       setLoading(false);
     }

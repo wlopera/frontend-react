@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Login from "./Login";
 import PersonTable from "../components/person/PersonTable";
-import UserTable from "../components/UserTable";
 import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
@@ -20,12 +19,6 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen">
       <nav className="w-48 bg-gray-800 text-white p-4 flex flex-col gap-2">
-        <button
-          onClick={() => setView("users")}
-          className="p-2 hover:bg-gray-700 rounded"
-        >
-          Usuarios
-        </button>
         <button
           onClick={() => setView("persons")}
           className="p-2 hover:bg-gray-700 rounded"
@@ -45,7 +38,6 @@ export default function Dashboard() {
           <p className="text-gray-500">Selecciona una opción del menú</p>
         )}
 
-        {view === "users" && <UserTable />}
         {view === "persons" && <PersonTable />}
       </main>
     </div>

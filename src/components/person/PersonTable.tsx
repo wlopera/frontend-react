@@ -4,6 +4,7 @@ import PersonModal from "./PersonModal";
 import PersonDetailModal from "./PersonDetailModal";
 import { useAuth } from "../../hooks/useAuth";
 import type { Person } from "../../types/Person";
+import { deletePerson, getPersons } from "../../services/personService";
 
 export default function PersonTable() {
   const { token } = useAuth();
@@ -17,15 +18,10 @@ export default function PersonTable() {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/person", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error("Error al obtener personas");
-      const data = await res.json();
+      const data = await getPersons(token);
       setPersons(data);
     } catch (err) {
-      setError("No se pudieron cargar los datos");
-      console.error(err);
+      console.error("❌ Error al obtener personas:", err);
     } finally {
       setLoading(false);
     }
@@ -35,17 +31,16 @@ export default function PersonTable() {
     fetchPersons();
   }, [token]);
 
-  const handleDelete = async (identity_number: string) => {
-    console.log("Persona a borrra: ", identity_number);
+  const handleDelete = async (id: number) => {
     if (!token) return;
+    if (!confirm("¿Seguro que deseas eliminar esta persona?")) return;
+
     try {
-      await fetch(`http://localhost:3000/api/person/${identity_number}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await deletePerson(id, token);
       fetchPersons();
     } catch (err) {
-      console.error(err);
+      console.error("❌ Error al eliminar persona:", err);
+      alert("Error al eliminar persona");
     }
   };
 

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { login } from "../services/authService";
 
 export default function Login() {
   const { saveToken } = useAuth(); // ✅ Hook se llama en el nivel superior
@@ -16,21 +17,10 @@ export default function Login() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+      const res = await login(username, password);
 
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "Error en login");
-        return;
-      }
-
-      const data = await res.json();
-      setToken(data.token); // Guardamos token en estado
-      saveToken(data.token); // Guardamos token en localStorage
+      setToken(res.token); // Guardamos token en estado
+      saveToken(res.token); // Guardamos token en localStorage
       navigate("/dashboard"); // 🔹 Redirige al dashboard
     } catch (err) {
       setError("Error de conexión al servidor");

@@ -6,7 +6,7 @@ export const getBirthdays = async (token: string) => {
 };
 
 // 🔹 Obtener cumpleaño por ID
-export const getBirthdayyId = async (id: number, token: string) => {
+export const getBirthdayId = async (id: number, token: string) => {
   return apiFetch(`api/birthday/${id}`, { method: "GET" }, token);
 };
 

@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import Login from "./Login";
 import PersonTable from "../components/person/PersonTable";
 import { useNavigate } from "react-router-dom";
+import BirthdayTable from "../components/birthday/BirthdayTable";
 
 export default function Dashboard() {
   const { token, clearToken } = useAuth();
@@ -19,6 +20,12 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen">
       <nav className="w-48 bg-gray-800 text-white p-4 flex flex-col gap-2">
+        <button
+          onClick={() => setView("birthdays")}
+          className="p-2 hover:bg-gray-700 rounded"
+        >
+          Cumpleaños
+        </button>
         <button
           onClick={() => setView("persons")}
           className="p-2 hover:bg-gray-700 rounded"
@@ -39,6 +46,7 @@ export default function Dashboard() {
         )}
 
         {view === "persons" && <PersonTable />}
+        {view === "birthdays" && <BirthdayTable />}
       </main>
     </div>
   );

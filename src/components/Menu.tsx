@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function Menu({ active, onSelect }) {
-  const items = ["Personas"];
+  const items = ["Cumpleaños", "Personas"];
 
   return (
     <div className="w-48 bg-gray-800 text-white h-screen p-4">
